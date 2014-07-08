@@ -26,9 +26,7 @@ public class MainActivity extends Activity {
 		final Context context = this;
 		final LightController lc = new LightController(this);
 		final PowerController pc = new PowerController(this);
-		final MoviesController movc = new MoviesController();
-		final MusicController musc = new MusicController();
-
+		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 

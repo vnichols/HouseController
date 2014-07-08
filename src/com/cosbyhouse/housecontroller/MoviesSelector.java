@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +16,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -69,25 +70,18 @@ public class MoviesSelector extends Activity{
 		ConnectivityManager connMgr = (ConnectivityManager) 
 				getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		if (networkInfo != null && networkInfo.isConnected()) {
-			URL url = new URL("http://obiwan:buffduck@192.168.1.13:4242");
-			list.add(url.getPath());
-	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	        conn.setReadTimeout(10000 /* milliseconds */);
-	        conn.setConnectTimeout(15000 /* milliseconds */);
-	        conn.setRequestMethod("GET");
-	        conn.setDoInput(true);
-	        // Starts the query
-	        conn.connect();
-	        int response = conn.getResponseCode();
-	        list.add("" + response);
-	        //Log.d(DEBUG_TAG, "The response is: " + response);
-	        InputStream is = conn.getInputStream();
-
-	        // Convert the InputStream into a string
-	        String contentAsString = readIt(is, 500);
-	        //return contentAsString;
-			list.add(contentAsString);
+		if (false){//networkInfo != null && networkInfo.isConnected()) {
+			URL url = new URL("http://barkevious:8080");
+			list.add(url.getHost());
+	        URLConnection connection = url.openConnection();
+	        HttpURLConnection httpConnection = (HttpURLConnection) connection;
+	        int responseCode = httpConnection.getResponseCode();
+	        list.add(responseCode + "");
+	        if (responseCode == HttpURLConnection.HTTP_OK) {
+	            Log.d("MyApp", "Registration success");
+	        } else {
+	            Log.w("MyApp", "Registration failed for: ");              
+	        }
 		} else {
 
 			list.add("foo");
@@ -96,14 +90,7 @@ public class MoviesSelector extends Activity{
 
 		return list;
 	}
-	
-	public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-	    Reader reader = null;
-	    reader = new InputStreamReader(stream, "UTF-8");        
-	    char[] buffer = new char[len];
-	    reader.read(buffer);
-	    return new String(buffer);
-	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
